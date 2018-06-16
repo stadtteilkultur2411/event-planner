@@ -1,0 +1,124 @@
+<html>
+<head>
+    <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyB5Eef2fVGBf5a_IhesJ4I2SBeMRtPBvVI",
+        authDomain: "stadtteilkultur2411.firebaseapp.com",
+        databaseURL: "https://stadtteilkultur2411.firebaseio.com",
+        projectId: "stadtteilkultur2411",
+        storageBucket: "",
+        messagingSenderId: "858874824850"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
+    <style>
+        .event-cell {
+            width: 100px;
+        }
+
+        .event-cell span {
+            width: 20px;
+            height: 20px;
+            background-color: dimgrey;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .status-0 span.s0 {
+            background-color: red;
+        }
+
+        .status-1 span.s1 {
+            background-color: yellow;
+        }
+
+        .status-2 span.s2 {
+            background-color: blue;
+        }
+
+        .status-3 span.s3 {
+            background-color: green;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        {{ technicians }}
+        <pre>{{ events }}</pre>
+        <table>
+            <tr>
+                <td>Event</td>
+                <td v-for="technician in technicians">{{ technician.firstName }}</td>
+            </tr>
+            <event
+                v-for="event in events"
+                v-bind:event="event"
+                v-bind:technicians="technicians"
+            />
+        </table>
+    </div>
+
+
+<script>
+  var db = firebase.database();
+
+  var vm = new Vue({
+    el: '#app',
+    firebase: function () {
+      return {
+        technicians: db.ref('technicians'),
+        events: db.ref('events'),
+      }
+    },
+    methods: {
+      log: (event, technician) => {
+        //event.technicians[technician['.key']] += 1;
+        firebase.database().ref(`events/${event['.key']}/technicians/${technician['.key']}`).set(((event.technicians[technician['.key']] || 0) + 1) % 4);
+        console.log(event);
+        console.log(technician);
+      }
+    },
+    template: `
+<div>
+    <table>
+        <tr>
+            <td v-on:click="window.alert('lalalala')">Event</td>
+            <td v-for="technician in technicians">{{ technician.firstName }}</td>
+        </tr>
+        <event
+            v-for="e in events"
+            v-bind:event="e"
+            v-bind:technicians="technicians"
+            v-on:click="log(e, $event)"
+        />
+    </table>
+</div>
+`
+  });
+
+    Vue.component('event', {
+      props: ['event', 'technicians'],
+      template: `
+<tr class="event-row">
+  <td>{{event['.key']}}<br>{{ event.name }}</td>
+  <td v-for="technician in technicians" @click="$emit('click',technician)">
+    <div v-bind:class="['status-'+event.technicians[technician['.key']], 'event-cell']">
+    <span class="s0"/>
+    <span class="s1"/>
+    <span class="s2"/>
+    <span class="s3"/>
+    </div>
+  </td>
+</tr>
+`
+    })
+</script>
+
+</body>
+</html
