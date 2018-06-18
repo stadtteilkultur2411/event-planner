@@ -1,15 +1,15 @@
 <template>
-    <tr class="event-row">
-        <td>{{event['.key']}}<br>{{ event.name }}</td>
-        <td v-for="technician in technicians" @click="$emit('click',technician)" v-bind:key="technician['.key']">
+    <div class="columns event-row">
+        <div class="column col-6">{{event['.key']}}<br>{{ event.name }}</div>
+        <div class="column col-3" v-for="technician in technicians" @click="$emit('click',technician)" v-bind:key="technician['.key']">
             <div v-bind:class="['status-'+((event.technicians || {})[technician['.key']] || 0), 'event-cell']">
                 <span class="s0"/>
                 <span class="s1"/>
                 <span class="s2"/>
                 <span class="s3"/>
             </div>
-        </td>
-    </tr>
+        </div>
+    </div>
 </template>
 
 <script>

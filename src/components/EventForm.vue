@@ -21,7 +21,7 @@
       date: '',
     }),
     methods: {
-      dateFormatter: (date) => moment(date).format('YYYY-MM-DD'),
+      dateFormatter: (date) => moment(date).format('DD.MM.YYYY'),
     },
   }
 </script>

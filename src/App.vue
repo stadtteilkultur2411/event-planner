@@ -1,10 +1,9 @@
 <template>
-  <div id="app">
-    <table>
-      <tr>
-        <td>Events</td>
-        <td v-for="technician in technicians" v-bind:key="technician['.key']">{{ technician.firstName }}</td>
-      </tr>
+  <div id="app" class="container grid-sm">
+      <div class="columns">
+        <div class="column col-6">Events</div>
+        <div class="column col-3" v-for="technician in technicians" v-bind:key="technician['.key']">{{ technician.firstName }}</div>
+      </div>
       <Event
               v-for="event in events"
               v-bind:event="event"
@@ -12,7 +11,6 @@
               v-bind:key="event['.key']"
               @click="changeState(event, $event)"
       />
-    </table>
     <EventForm @submit="createEvent($event)" />
   </div>
 </template>
@@ -20,6 +18,8 @@
 <script>
 import firebase from 'firebase/app';
 import 'firebase/database';
+import moment from 'moment';
+
 import Event from './components/Event.vue'
 import EventForm from './components/EventForm.vue'
 
@@ -52,8 +52,9 @@ export default {
     },
 
     createEvent: ({date, name}) => {
+      const dateKey = moment(date).format('YYYY-MM-DD');
       // eslint-disable-next-line
-      firebase.database().ref(`events/${date}`).set({name});
+      firebase.database().ref(`events/${dateKey}`).set({name});
     }
   },
 }
@@ -61,11 +62,6 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
 }
 </style>
