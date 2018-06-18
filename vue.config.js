@@ -1,3 +1,3 @@
 module.exports = {
-  baseUrl: '/dist/'
+  baseUrl: '/event-planner/dist/'
 }
