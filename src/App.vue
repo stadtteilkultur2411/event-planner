@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="container grid-sm">
       <div class="columns">
-        <div class="column col-6">Events</div>
-        <div class="column col-3" v-for="technician in technicians" v-bind:key="technician['.key']">{{ technician.firstName }}</div>
+        <div class="column col-4">Events</div>
+        <div class="column col-4" v-for="technician in technicians" v-bind:key="technician['.key']">{{ technician.firstName }}</div>
       </div>
       <Event
               v-for="event in events"
@@ -51,10 +51,10 @@ export default {
       firebase.database().ref(`events/${event['.key']}/technicians/${technician['.key']}`).set((((event.technicians || {})[technician['.key']] || 0) + 1) % 4);
     },
 
-    createEvent: ({date, name}) => {
+    createEvent: ({date, name, description}) => {
       const dateKey = moment(date).format('YYYY-MM-DD');
       // eslint-disable-next-line
-      firebase.database().ref(`events/${dateKey}`).set({name});
+      firebase.database().ref(`events/${dateKey}`).set({name, description});
     }
   },
 }
