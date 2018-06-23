@@ -1,15 +1,15 @@
 <template>
   <div id="app" class="container grid-sm">
       <div class="columns">
-        <div class="column col-4">Events</div>
-        <div class="column col-4" v-for="technician in technicians" v-bind:key="technician['.key']">{{ technician.firstName }}</div>
+        <div class="column col-6">Events</div>
+        <div class="column col-3" v-for="technician in technicians" v-bind:key="technician['.key']">{{ technician.firstName }}</div>
       </div>
       <Event
               v-for="event in events"
               v-bind:event="event"
               v-bind:technicians="technicians"
               v-bind:key="event['.key']"
-              @click="changeState(event, $event)"
+              @status="setStatus(event, $event)"
       />
     <EventForm @submit="createEvent($event)" />
   </div>
@@ -49,6 +49,10 @@ export default {
   methods: {
     changeState: (event, technician) => {
       firebase.database().ref(`events/${event['.key']}/technicians/${technician['.key']}`).set((((event.technicians || {})[technician['.key']] || 0) + 1) % 4);
+    },
+
+    setStatus(event, data) {
+      firebase.database().ref(`events/${data.eventId}/technicians/${data.technicianId}`).set(data.status);
     },
 
     createEvent: ({date, name, description}) => {
