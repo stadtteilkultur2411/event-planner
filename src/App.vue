@@ -6,12 +6,16 @@
       </div>
       <Event
               v-for="event in events"
-              v-bind:event="event"
-              v-bind:technicians="technicians"
-              v-bind:key="event['.key']"
+              :event="event"
+              :technicians="technicians"
+              :key="event['.key']"
+              :selected="event['.key'] === selectedEvent['.key']"
+              @select="setSelected(event)"
               @status="setStatus(event, $event)"
+              @submit="createEvent($event)"
       />
-    <EventForm @submit="createEvent($event)" />
+      <h3>Neues Event anlegen</h3>
+      <EventForm @submit="createEvent($event)" />
   </div>
 </template>
 
@@ -40,6 +44,9 @@ export default {
     Event,
     EventForm,
   },
+  data: () => ({
+    selectedEvent: {},
+  }),
   firebase: function () {
     return {
       technicians: db.ref('technicians'),
@@ -51,15 +58,21 @@ export default {
       firebase.database().ref(`events/${event['.key']}/technicians/${technician['.key']}`).set((((event.technicians || {})[technician['.key']] || 0) + 1) % 4);
     },
 
+    setSelected(event) {
+      this.selectedEvent = event;
+    },
+
     setStatus(event, data) {
       firebase.database().ref(`events/${data.eventId}/technicians/${data.technicianId}`).set(data.status);
     },
 
-    createEvent: ({date, name, description}) => {
+    createEvent: ({date, name, description, technicians}) => {
       const dateKey = moment(date).format('YYYY-MM-DD');
       // eslint-disable-next-line
-      firebase.database().ref(`events/${dateKey}`).set({name, description});
-    }
+      firebase.database().ref(`events/${dateKey}`).set({name, description, technicians});
+    },
+
+
   },
 }
 </script>

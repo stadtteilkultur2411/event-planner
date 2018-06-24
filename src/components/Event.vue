@@ -1,25 +1,30 @@
 <template>
     <div>
         <div class="columns event-row">
-            <div class="column col-6">
+            <div class="column col-6" @click="toggleDetails(event)">
                 <strong>{{dateFormatter(event)}}</strong><br>
-                {{ event.name }}<br>
-                <em>{{ event.description }}</em>
+                {{ event.name }}
             </div>
             <TechnicianIndicator
                 v-for="technician in technicians"
                 :key="technician['.key']"
                 :status="(event.technicians || {})[technician['.key']]"
-                :selected="(selectedTechnician && selectedTechnician['.key'] ===  technician['.key'])"
-                @click="toggleTechnician(technician)"
+                :selected="(selected && selectedDetails && selectedDetails['.key'] ===  technician['.key'])"
+                @click="toggleDetails(technician)"
             />
         </div>
         <TechnicianForm
-                :technicianId="selectedTechnician['.key']"
-                :eventId="event['.key']"
-                :status="selectedStatus"
-                @status="$emit('status', $event)"
-                v-if="selectedTechnician"/>
+            :technicianId="selectedDetails['.key']"
+            :eventId="event['.key']"
+            :status="selectedStatus"
+            @status="$emit('status', $event)"
+            v-if="selected && selectedDetails && selectedDetails.firstName"
+        />
+        <EventDetails
+            :event="event"
+            @submit="$emit('submit', $event)"
+            v-if="selected && selectedDetails && selectedDetails.name"
+        />
     </div>
 </template>
 
@@ -27,30 +32,33 @@
   import moment from 'moment';
   import TechnicianForm from './TechnicianForm';
   import TechnicianIndicator from './TechnicianIndicator';
+  import EventForm from "./EventForm";
+  import EventDetails from "./EventDetails";
 
   export default {
     name: 'Event',
-    props: ['event', 'technicians'],
-    components: { TechnicianForm, TechnicianIndicator },
+    props: ['event', 'technicians', 'selected'],
+    components: {EventForm, TechnicianForm, TechnicianIndicator, EventDetails },
     data: () => ({
       showDetails: false,
-      selectedTechnician: null,
+      selectedDetails: null,
     }),
     computed: {
       selectedStatus(){
         if (! this.event.technicians) return 0;
-        return this.selectedTechnician ? this.event.technicians[this.selectedTechnician['.key']] : 0;
+        return this.selectedDetails ? this.event.technicians[this.selectedDetails['.key']] : 0;
       }
     },
     methods: {
       dateFormatter: (event) => moment(event['.key'], 'YYYY-MM-DD').format('DD.MM.YYYY'),
       // eslint-disable-next-line
-      toggleTechnician(technician) {
+      toggleDetails(selection) {
+        this.$emit('select');
 
-        if (! this.selectedTechnician || this.selectedTechnician['.key'] !== technician['.key']) {
-          this.selectedTechnician = technician;
+        if (!this.selected || !this.selectedDetails || this.selectedDetails['.key'] !== selection['.key']) {
+          this.selectedDetails = selection;
         } else {
-          this.selectedTechnician = null;
+          this.selectedDetails = null;
         }
       },
     },
