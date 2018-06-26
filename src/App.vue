@@ -1,8 +1,12 @@
 <template>
   <div id="app" class="container grid-sm">
+      <br>
+      <h3>Veranstaltungen</h3>
       <div class="columns">
-        <div class="column col-6">Events</div>
-        <div class="column col-3" v-for="technician in technicians" v-bind:key="technician['.key']">{{ technician.firstName }}</div>
+        <div class="column col-6"><strong>Events</strong></div>
+        <div class="column col-3" v-for="technician in technicians" v-bind:key="technician['.key']" style="text-align: center">
+            <strong>{{ technician.firstName }}</strong>
+        </div>
       </div>
       <Event
               v-for="event in events"
@@ -13,8 +17,11 @@
               @select="setSelected(event)"
               @status="setStatus(event, $event)"
               @submit="createEvent($event)"
+              @delete="deleteEvent($event)"
       />
-      <h3>Neues Event anlegen</h3>
+      <br>
+      <br>
+      <h3>Neue Veranstaltung</h3>
       <EventForm @submit="createEvent($event)" />
   </div>
 </template>
@@ -70,6 +77,11 @@ export default {
       const dateKey = moment(date).format('YYYY-MM-DD');
       // eslint-disable-next-line
       firebase.database().ref(`events/${dateKey}`).set({name, description, technicians});
+    },
+
+    deleteEvent: ({event}) => {
+      // eslint-disable-next-line
+      firebase.database().ref(`events/${event['.key']}`).remove();
     },
 
 

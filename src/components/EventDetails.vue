@@ -3,7 +3,9 @@
         <em>{{ event.description }}</em>
         <EventForm
             :event="event"
+            :deletable="true"
             @submit="$emit('submit', $event)"
+            @delete="$emit('delete', $event)"
         />
     </div>
 </template>

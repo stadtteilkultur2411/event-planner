@@ -1,15 +1,38 @@
 <template>
     <div id="addEventForm">
-        <div>
-            <Datepicker v-model="date" :format="dateFormatter" placeholder="Datum"/>
+        <div class="form-group">
+            <div class="columns">
+                <div class="column col-3">
+                    <label  class="form-label"> Datum
+                    <Datepicker v-model="date" :format="dateFormatter" placeholder="Datum" input-class="form-input"/>
+                    </label>
+                </div>
+                <div class="column col-8">
+                    <label  class="form-label"> Title
+                    <input v-model="name" placeholder="Titel" class="form-input">
+                    </label>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column col-11">
+                    <label  class="form-label"> Beschreibung
+                    <textarea v-model="description" placeholder="Beschreibung" class="form-input"></textarea>
+                    </label>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column col-5">
+                    <button @click="$emit('submit', {name, date, description, technicians: (event && event.technicians) || {}})" class="btn btn-primary">
+                        Hinzufügen
+                    </button>
+                </div>
+                <div class="column col-6" style="text-align: right">
+                    <button @click="$emit('delete', { event })" class="btn btn-error" v-if="deletable">
+                        Löschen
+                    </button>
+                </div>
+            </div>
         </div>
-        <div>
-            <input v-model="name" placeholder="Titel">
-        </div>
-        <div>
-            <textarea v-model="description" placeholder="Beschreibung"></textarea>
-        </div>
-        <button @click="$emit('submit', {name, date, description, technicians: (event && event.technicians) || {}})">Hinzufügen</button>
     </div>
 </template>
 
@@ -22,7 +45,7 @@
     components: {
       Datepicker
     },
-    props: ['event'],
+    props: ['event', 'deletable'],
     data() {
       return {
           name: (this.event && this.event.name) || '',
@@ -39,5 +62,9 @@
 <style>
 #addEventForm {
     margin-top: 30px;
+}
+
+.date-picker input{
+    width: 100px;
 }
 </style>

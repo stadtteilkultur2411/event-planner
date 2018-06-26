@@ -23,6 +23,7 @@
         <EventDetails
             :event="event"
             @submit="$emit('submit', $event)"
+            @delete="$emit('delete', $event)"
             v-if="selected && selectedDetails && selectedDetails.name"
         />
     </div>

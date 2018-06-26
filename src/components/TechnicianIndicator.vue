@@ -5,10 +5,10 @@
             @click="$emit('click')"
     >
         <div v-bind:class="[`status-${status}`, 'event-cell']">
-            <span class="s1"/>
-            <span class="s2"/>
-            <span class="s3"/>
-            <span class="s4"/>
+            <div class="s1"/>
+            <div class="s2"/>
+            <div class="s3"/>
+            <div class="s4"/>
         </div>
     </div>
 </template>
@@ -31,31 +31,35 @@
     }
 
     .event-cell {
-        flex-direction: row;
-        align-items: center;
+        display: flex;
+        flex: 1;
+        padding-top: 12px;
+        justify-content: center;
     }
 
-    .event-cell span {
+    .event-cell div {
         width: 20px;
         height: 20px;
         background-color: dimgrey;
         border-radius: 10px;
         display: inline-block;
+        margin: 0 2px;
     }
 
-    .status-1 span.s1 {
+    .status-1 div.s1 {
         background-color: red;
     }
 
-    .status-2 span.s2 {
+    .status-2 div.s2 {
         background-color: yellow;
     }
 
-    .status-3 span.s3 {
-        background-color: blue;
+    .status-3 div.s3,
+    .status-4 div.s3 {
+        background-color: green;
     }
 
-    .status-4 span.s4 {
-        background-color: green;
+    .status-4 div.s4 {
+        background-color: blue;
     }
 </style>
