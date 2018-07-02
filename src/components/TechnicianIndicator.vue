@@ -17,9 +17,6 @@
   export default {
     name: 'TechnicianIndicator',
     props: ['status', 'selected'],
-    computed: {
-
-    },
   }
 </script>
 

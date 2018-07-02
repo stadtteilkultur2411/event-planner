@@ -1,6 +1,7 @@
 <template>
     <div id="addEventForm">
-        <div class="form-group">
+        <div class="form-group"  v-if="expanded">
+            <h3>{{ expandLabel }}</h3>
             <div class="columns">
                 <div class="column col-3">
                     <label  class="form-label"> Datum
@@ -22,16 +23,23 @@
             </div>
             <div class="columns">
                 <div class="column col-5">
-                    <button @click="$emit('submit', {name, date, description, technicians: (event && event.technicians) || {}})" class="btn btn-primary">
-                        Hinzufügen
+                    <button @click="submit()" class="btn btn-primary">
+                        {{ actionLabel }}
+                    </button>
+                    &nbsp;
+                    <button @click="cancel()" class="btn">
+                        Abbrechen
                     </button>
                 </div>
-                <div class="column col-6" style="text-align: right">
-                    <button @click="$emit('delete', { event })" class="btn btn-error" v-if="deletable">
-                        Löschen
+                <div class="column col-6" style="text-align: right" v-if="destructiveLabel">
+                    <button @click="$emit('destruct', { event })" class="btn btn-error">
+                        {{ destructiveLabel }}
                     </button>
                 </div>
             </div>
+        </div>
+        <div v-else>
+            <button @click="expanded = true" class="btn btn-primary">{{ expandLabel }}</button>
         </div>
     </div>
 </template>
@@ -45,16 +53,38 @@
     components: {
       Datepicker
     },
-    props: ['event', 'deletable'],
+    props: ['event', 'expandLabel', 'actionLabel', 'destructiveLabel'],
     data() {
       return {
-          name: (this.event && this.event.name) || '',
-          date: (this.event && this.event['.key']) || '',
-          description: (this.event && this.event.description) || '',
+        expanded: false,
+        name: (this.event && this.event.name) || '',
+        date: (this.event && this.event['.key']) || '',
+        description: (this.event && this.event.description) || '',
       }
     },
     methods: {
       dateFormatter: (date) => moment(date).format('DD.MM.YYYY'),
+      submit() {
+        this.$emit(
+          'submit',
+          {
+            name: this.name,
+            date: this.date,
+            description: this.description,
+            technicians: (this.event && this.event.technicians) || {}
+          }
+        );
+        if (! this.event) {
+          this.name = this.date = this.description = '';
+        }
+        this.expanded = false;
+      },
+      cancel() {
+        if (! this.event) {
+          this.name = this.date = this.description = '';
+        }
+        this.expanded = false
+      }
     },
   }
 </script>

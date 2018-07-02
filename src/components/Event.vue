@@ -2,6 +2,7 @@
     <div>
         <div class="columns event-row">
             <div class="column col-6" @click="toggleDetails(event)">
+                <span class="event-info" v-if="event.description">ℹ</span>
                 <strong>{{dateFormatter(event)}}</strong><br>
                 {{ event.name }}
             </div>
@@ -72,5 +73,16 @@
         margin-top: 10px;
         padding-top: 10px;
         border-top: 1px solid grey;
+    }
+
+    span.event-info {
+        width: 20px;
+        height: 20px;
+        padding-left: 4px;
+        border-radius: 10px;
+        border: 1px solid black;
+        display: inline-block;
+        line-height: 15px;
+        float: right;
     }
 </style>

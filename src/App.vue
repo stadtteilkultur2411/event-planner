@@ -19,10 +19,11 @@
               @submit="createEvent($event)"
               @delete="deleteEvent($event)"
       />
-      <br>
-      <br>
-      <h3>Neue Veranstaltung</h3>
-      <EventForm @submit="createEvent($event)" />
+      <EventForm
+              actionLabel="Anlegen"
+              expandLabel="Neue Veranstaltung"
+              @submit="createEvent($event)"
+      />
   </div>
 </template>
 
@@ -45,6 +46,7 @@ var config = {
 firebase.initializeApp(config);
 const db = firebase.database();
 
+
 export default {
   name: 'app',
   components: {
@@ -53,11 +55,12 @@ export default {
   },
   data: () => ({
     selectedEvent: {},
+    startDate: moment().subtract(1, 'weeks').format('YYYY-MM-DD'),
   }),
   firebase: function () {
     return {
       technicians: db.ref('technicians'),
-      events: db.ref('events'),
+      events: db.ref('events').orderByKey().startAt(this.startDate),
     }
   },
   methods: {

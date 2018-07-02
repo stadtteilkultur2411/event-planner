@@ -3,9 +3,11 @@
         <em>{{ event.description }}</em>
         <EventForm
             :event="event"
-            :deletable="true"
+            actionLabel="Speichern"
+            destructiveLabel="Löschen"
+            expandLabel="Veranstaltung Bearbeiten"
             @submit="$emit('submit', $event)"
-            @delete="$emit('delete', $event)"
+            @destruct="$emit('delete', $event)"
         />
     </div>
 </template>
